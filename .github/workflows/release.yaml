@@ -1,0 +1,32 @@
+on: push
+branches:
+  - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target wasm32-unknown-unknown
+      - uses: jetli/wasm-bindgen-action@v0.2.0
+        with:
+          version: 'latest'
+      - name: Package
+        run: |
+          mkdir -p dist
+          wasm-bindgen target/wasm32-unknown-unknown/release/ --out-dir dist
+          cp website/index.html dist
+          cp website/style.css dist
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
