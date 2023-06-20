@@ -19,6 +19,7 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
+          use-cross: true
           args: --release --target wasm32-unknown-unknown
       - uses: jetli/wasm-bindgen-action@v0.2.0
         with:
