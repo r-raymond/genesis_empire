@@ -33,11 +33,11 @@ jobs:
         run: |
           mkdir -p dist
           wasm-bindgen --out-dir dist/ --target web ./target/wasm32-unknown-unknown/release/genesis_empire.wasm
-          ls -alh dist
-          cat dist/genesis_empire.js
           cp website/index.html dist
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          path: 'dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
