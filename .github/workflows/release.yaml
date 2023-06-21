@@ -32,7 +32,9 @@ jobs:
       - name: Package
         run: |
           mkdir -p dist
-          wasm-bindgen target/wasm32-unknown-unknown/release/ --out-dir dist
+          wasm-bindgen --out-dir dist/ --target web ./target/wasm32-unknown-unknown/release/genesis_empire.wasm
+          ls -alh dist
+          cat dist/genesis_empire.js
           cp website/index.html dist
           cp website/style.css dist
       - name: Deploy
