@@ -39,7 +39,6 @@ jobs:
         run: |
           mkdir -p dist
           wasm-bindgen --out-dir dist/ --target web ./target/wasm32-unknown-unknown/release/genesis_empire.wasm
-          brotli -Z -j dist/genesis_empire_bg.wasm
           cp website/index.html dist
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
