@@ -10,5 +10,6 @@ bevy = "0.10.1"
 runner = "wasm-server-runner"
 
 [profile.release]
-opt-level = "z"
+opt-level = "s"
 lto = "thin"
+strip = "symbols"
