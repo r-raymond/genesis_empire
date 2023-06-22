@@ -18,7 +18,7 @@ jobs:
           toolchain: stable
       - run: |
           sudo apt-get update
-          sudo apt-get install -y g++ pkg-config libx11-dev libasound2-dev libudev-dev
+          sudo apt-get install -y g++ pkg-config libx11-dev libasound2-dev libudev-dev brotli
       - uses: actions-rs/cargo@v1
         with:
           command: test
@@ -39,6 +39,7 @@ jobs:
         run: |
           mkdir -p dist
           wasm-bindgen --out-dir dist/ --target web ./target/wasm32-unknown-unknown/release/genesis_empire.wasm
+          brotli -Z -j dist/genesis_empire_bg.wasm
           cp website/index.html dist
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
