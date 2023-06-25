@@ -27,5 +27,15 @@
   <script>
     // prevent right click menu
     document.addEventListener('contextmenu', (event) => event.preventDefault())
+    // request fullscreeen
+    const fullscreen = document.getElementById('fullscreen')
+    fullscreen.addEventListener('click', () => {
+      const canvas = document.querySelector('canvas')
+      canvas.requestFullscreen()
+    })
   </script>
+  <body>
+
+      <button id="fullscreen">Fullscreen</button>
+  </body>
 </html>
