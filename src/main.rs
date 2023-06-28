@@ -5,6 +5,7 @@ mod terrain;
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugin(MaterialPlugin::<terrain::TerrainShader>::default())
         .add_startup_system(setup)
         .add_startup_system(camera::setup_camera)
         .add_startup_system(terrain::setup_terrain)
