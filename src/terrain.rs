@@ -35,7 +35,6 @@ pub fn setup_terrain(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<TerrainShader>>,
-    assert_server: Res<AssetServer>,
 ) {
     let mut mesh: Mesh = shape::Plane {
         size: 50.0,
@@ -65,9 +64,6 @@ pub fn setup_terrain(
     commands.spawn(MaterialMeshBundle {
         mesh: meshes.add(mesh),
         material: materials.add(TerrainShader {
-            dirt: Some(assert_server.load("textures/dirt.png")),
-            grass: Some(assert_server.load("textures/grass.png")),
-            alpha_mode: AlphaMode::Blend,
         }),
         ..default()
     });
@@ -77,21 +73,10 @@ pub fn setup_terrain(
 #[derive(AsBindGroup, TypeUuid, Debug, Clone)]
 #[uuid = "f690fdae-d598-45ab-8225-97e2a3f056e0"]
 pub struct TerrainShader {
-    #[texture(0)]
-    #[sampler(1)]
-    grass: Option<Handle<Image>>,
-    #[texture(2)]
-    #[sampler(3)]
-    dirt: Option<Handle<Image>>,
-    alpha_mode: AlphaMode,
 }
 
 impl Material for TerrainShader {
     fn fragment_shader() -> ShaderRef {
         "shaders/terrain.wgsl".into()
-    }
-
-    fn alpha_mode(&self) -> AlphaMode {
-        self.alpha_mode
     }
 }
