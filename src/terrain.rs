@@ -11,22 +11,22 @@ fn pixel_to_hex(x: f32, y: f32) -> (f32, f32) {
     (q, r)
 }
 
-fn axial_round(q: f32, r: f32) -> (i64, i64) {
-    let q_grid = q.round();
-    let r_grid = r.round();
+fn axial_round(x: f32, y: f32) -> (i64, i64) {
+    let x_grid = x.round();
+    let y_grid = y.round();
 
-    let q_diff = q - q_grid;
-    let r_diff = r - r_grid;
+    let x_diff = x - x_grid;
+    let y_diff = y - y_grid;
 
-    if q_diff.abs() >= r_diff.abs() {
+    if x_diff.abs() >= y_diff.abs() {
         (
-            q_grid as i64 + (q_diff + 0.5 * r_diff).round() as i64,
-            r_grid as i64,
+            x_grid as i64 + (x_diff + 0.5 * y_diff).round() as i64,
+            y_grid as i64,
         )
     } else {
         (
-            q_grid as i64,
-            r_grid as i64 + (r_diff + 0.5 * q_diff).round() as i64,
+            x_grid as i64,
+            y_grid as i64 + (y_diff + 0.5 * x_diff).round() as i64,
         )
     }
 }
@@ -53,7 +53,7 @@ pub fn setup_terrain(
                 match elevation.get(&(q, r)) {
                     Some(e) => vec[i][1] = *e,
                     None => {
-                        vec[i][1] = rand::random::<f32>() * 1.0;
+                        vec[i][1] = 0.5 + rand::random::<f32>() * 0.1;
                         elevation.insert((q, r), vec[i][1]);
                     }
                 }
@@ -63,8 +63,7 @@ pub fn setup_terrain(
 
     commands.spawn(MaterialMeshBundle {
         mesh: meshes.add(mesh),
-        material: materials.add(TerrainShader {
-        }),
+        material: materials.add(TerrainShader {}),
         ..default()
     });
 }
@@ -72,8 +71,7 @@ pub fn setup_terrain(
 // This is the struct that will be passed to your shader
 #[derive(AsBindGroup, TypeUuid, Debug, Clone)]
 #[uuid = "f690fdae-d598-45ab-8225-97e2a3f056e0"]
-pub struct TerrainShader {
-}
+pub struct TerrainShader {}
 
 impl Material for TerrainShader {
     fn fragment_shader() -> ShaderRef {

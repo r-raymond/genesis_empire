@@ -7,6 +7,32 @@ fn pixel_to_hex(pos: vec2<f32>) -> vec2<f32> {
     return vec2<f32>(q, r);
 }
 
+fn close_to_border(pos: vec2<f32>) -> f32 {
+    var hex: vec2<f32> = pixel_to_hex(pos);
+
+    var x_grid = round(hex.x);
+    var y_grid = round(hex.y);
+
+    var x_diff = hex.x - x_grid;
+    var y_diff = hex.y - y_grid;
+
+    var smallest: f32 = 1.0;
+
+    if (x_diff >= 1.0 / 3.0 && y_diff >= 1.0 / 3.0) {
+        smallest = min(smallest, abs(y_diff - x_diff));
+    }
+    if (x_diff <= -1.0 / 3.0 && y_diff <= -1.0 / 3.0) {
+        smallest = min(smallest, abs(y_diff - x_diff));
+    }
+    if (abs(x_diff) >= abs(y_diff)) {
+        smallest = min(smallest, abs(0.5 - abs(x_diff + 0.5 * y_diff)));
+    } else {
+        smallest = min(smallest, abs(0.5 - abs(y_diff + 0.5 * x_diff)));
+    }
+
+    return smallest;
+}
+
 
 @fragment
 fn fragment(
@@ -16,22 +42,26 @@ fn fragment(
     var dirt: vec4<f32> = vec4<f32>(0.5, 0.25, 0.0, 1.0);
     var rock: vec4<f32> = vec4<f32>(0.25, 0.25, 0.25, 1.0);
     var snow: vec4<f32> = vec4<f32>(1.0, 1.0, 1.0, 1.0);
-    var blue: vec4<f32> = vec4<f32>(0.15, 0.97, 0.99, 1.0);
+    var grey: vec4<f32> = vec4<f32>(0.6, 0.6, 0.6, 0.6);
 
     var hex: vec2<f32> = pixel_to_hex(world_position.xz);
 
-    if (abs(0.5 - abs(hex.x - trunc(hex.x))) < LINE_SIZE || abs(0.5 - abs(hex.y - trunc(hex.y))) < LINE_SIZE) {
-        return blue;
+    var height: f32 = world_position.y;
+    var color: vec4<f32>;
+    if (height < 0.2) {
+        color = dirt;
+    } else if (height < 0.7) {
+        color = grass;
+    } else if (height < 0.9) {
+        color = rock;
+    } else {
+        color = snow;
     }
 
-    var height: f32 = world_position.y;
-    if (height < 0.2) {
-        return dirt;
-    } else if (height < 0.7) {
-        return grass;
-    } else if (height < 0.9) {
-        return rock;
-    } else {
-        return snow;
+    var diff: f32 = close_to_border(world_position.xz);
+    if (diff < LINE_SIZE) {
+        return mix(grey, color, diff / LINE_SIZE);
     }
+
+    return color;
 }
