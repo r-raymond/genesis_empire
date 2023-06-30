@@ -7,6 +7,24 @@ fn pixel_to_hex(pos: vec2<f32>) -> vec2<f32> {
     return vec2<f32>(q, r);
 }
 
+fn axial_round(pos: vec2<f32>) -> vec2<i32> {
+    var grid: vec2<f32> = round(pos);
+    var diff: vec2<f32> = pos - grid;
+
+    if (abs(diff.x) >= abs(diff.y)) {
+        return vec2<i32>(
+            i32(grid.x + round(diff.x + 0.5 * diff.y)),
+            i32(grid.y)
+        );
+    } else {
+        return vec2<i32>(
+            i32(grid.x),
+            i32(grid.y + round(diff.y + 0.5 * diff.x))
+        );
+    }
+}
+
+
 fn close_to_border(pos: vec2<f32>) -> f32 {
     var hex: vec2<f32> = pixel_to_hex(pos);
 
@@ -55,6 +73,12 @@ fn fragment(
     } else if (height < 0.9) {
         color = rock;
     } else {
+        color = snow;
+    }
+
+    var grid: vec2<i32> = axial_round(hex);
+
+    if ((grid.x + grid.y) % 2 == 0) {
         color = snow;
     }
 

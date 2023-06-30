@@ -53,7 +53,7 @@ pub fn setup_terrain(
                 match elevation.get(&(q, r)) {
                     Some(e) => vec[i][1] = *e,
                     None => {
-                        vec[i][1] = 0.5 + rand::random::<f32>() * 0.1;
+                        vec[i][1] = 0.5;// + rand::random::<f32>() * 0.1;
                         elevation.insert((q, r), vec[i][1]);
                     }
                 }
